@@ -5,11 +5,34 @@
         Peramalan Kasus Positif Covid 19 di Indonesia
       </h1>
     </div>
-    <div v-if="covid" class="mt-6 text-center">
-      <h2 class="text-2xl font-bold text-indigo-500">Bulan Januari 2021</h2>
-      <span class="text-sm italic text-indigo-400">Fuzzy Time Series Metode Chen</span>
-      <line-chart class="mt-4" :chart-data="chartdata"></line-chart>
-    </div>
+    <client-only v-if="covid">
+      <div class="mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Bulan Januari 2021</h2>
+        <p class="text-sm italic text-indigo-400">
+          Fuzzy Time Series Metode Chen
+        </p>
+        <line-chart class="mt-4" :chart-data="chartdata"></line-chart>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Tabel</h2>
+        <table class="w-full mt-4 border border-collapse border-indigo-800 table-auto">
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Tanggal</td>
+              <td class="border border-indigo-600">Positif</td>
+              <td class="border border-indigo-600">Prediksi</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, i) in covid.data.train" :key="item">
+              <td class="border border-indigo-600">{{ i + 1}}</td>
+              <td class="border border-indigo-600">{{ item }}</td>
+              <td class="border border-indigo-600">{{ forecast[i] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </client-only>
   </div>
 </template>
 
@@ -21,11 +44,28 @@ export default {
   components: {
     "line-chart": LineChart
   },
+  head() {
+    return {
+      title: "Fuzzy Time Series"
+    };
+  },
   data() {
     return {
       covid: null,
       chartdata: null
     };
+  },
+  computed: {
+    forecast() {
+      if (this.covid) {
+        let newForecast = [...this.covid.data.forecast];
+        newForecast.unshift(0);
+
+        return newForecast
+      } else {
+        return []
+      }
+    }
   },
   created() {
     this.predictCovid();
