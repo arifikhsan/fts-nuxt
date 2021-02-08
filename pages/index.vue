@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl pb-16 mx-auto">
+  <div class="max-w-3xl pt-4 pb-16 mx-auto">
     <div class="p-4 text-center">
       <h1 class="text-3xl font-bold text-indigo-600">
         Peramalan Kasus Positif Covid 19 di Indonesia
@@ -7,7 +7,7 @@
     </div>
     <div v-if="covid" class="mt-6 text-center">
       <h2 class="text-2xl font-bold text-indigo-500">Bulan Januari 2021</h2>
-      <span class="text-sm italic text-indigo-400">Metode Fuzzy Time Series Chen</span>
+      <span class="text-sm italic text-indigo-400">Fuzzy Time Series Metode Chen</span>
       <line-chart class="mt-4" :chart-data="chartdata"></line-chart>
     </div>
   </div>
