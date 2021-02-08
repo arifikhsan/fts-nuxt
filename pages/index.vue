@@ -73,7 +73,6 @@ export default {
             mode: "chen"
           }
         );
-        // console.log(this.covid.data.forecast);
 
         let date = range(1, 31);
 
