@@ -52,7 +52,8 @@ export default {
   data() {
     return {
       covid: null,
-      chartdata: null
+      chartdata: null,
+      series: null,
     };
   },
   computed: {
@@ -68,9 +69,19 @@ export default {
     }
   },
   created() {
-    this.predictCovid();
+    // this.predictCovid();
+    this.getSeries();
   },
   methods: {
+    async getSeries() {
+      try {
+        let res = await this.$axios.get('https://data.covid19.go.id/public/api/update.json')
+        this.series = res.data.update.harian.reverse().splice(30)
+        // console.log(this.series)
+      } catch (e) {
+        console.log(e)
+      }
+    },
     async predictCovid() {
       let train = [
         751270,
