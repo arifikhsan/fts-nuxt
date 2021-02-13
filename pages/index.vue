@@ -208,13 +208,31 @@ export default {
       const forecasts = [];
 
       // todo: loop array interval dan group bareng
-      // for (let iGroup = 0; iGroup < groups.length; iGroup++) {
-      //   const group = groups[iGroup];
+      for (let i = 0; i < groups.length; i++) {
+        const group = groups[i];
+        const interval = intervals[i];
 
-      //   const current = group.a;
-      //   const next = 1;
-      //   forecasts.push({ current, next, forecast });
-      // }
+        const currentState = interval.a;
+        const nextStates = [];
+        group.groupRelation.forEach(relation => {
+          let rel = relation.split(" ");
+          let lastRelation = rel[rel.length - 1];
+
+          nextStates.push(lastRelation);
+        });
+
+        const medians = [];
+
+        nextStates.forEach(nextState => {
+          const intervalItem = intervals.find(e => (e.a == nextState));
+          medians.push(intervalItem.median);
+        });
+
+        const forecast = medians.reduce((a, b) => a + b) / medians.length;
+        forecasts.push({ currentState, nextStates, forecast });
+      }
+
+      console.table(forecasts)
 
       // let intervalValues = dMin
       // let middleValues = null
