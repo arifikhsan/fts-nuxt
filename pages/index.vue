@@ -5,13 +5,17 @@
         Peramalan Kasus Positif Covid 19 di Indonesia
       </h1>
     </div>
-    <client-only v-if="covid">
+    <client-only v-if="done">
       <div class="mt-6 text-center">
         <h2 class="text-2xl font-bold text-indigo-500">Bulan Januari 2021</h2>
         <p class="text-sm italic text-indigo-400">
           Fuzzy Time Series Metode Chen
         </p>
-        <line-chart class="mt-4" :chart-data="chartdata"></line-chart>
+        <line-chart
+          class="mt-4"
+          :chart-data="chartdata"
+          :options="options"
+        ></line-chart>
       </div>
       <div class="px-4 mt-6 text-center">
         <h2 class="text-2xl font-bold text-indigo-500">Tabel</h2>
@@ -26,10 +30,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, i) in covid.data.train" :key="item">
-              <td class="border border-indigo-600">{{ i + 1 }}</td>
-              <td class="border border-indigo-600">{{ item }}</td>
-              <td class="border border-indigo-600">{{ forecast[i] }}</td>
+            <tr v-for="(seri, i) in series" :key="i">
+              <td class="border border-indigo-600">{{ seri.name }}</td>
+              <td class="border border-indigo-600">
+                {{ seri.dirawat_kumulatif }}
+              </td>
+              <td class="border border-indigo-600">{{ seri.forecast }}</td>
             </tr>
           </tbody>
         </table>
@@ -40,7 +46,7 @@
 
 <script>
 import LineChart from "@/components/line-chart";
-import { map, min, max, times, uniq } from "lodash";
+import { map, min, max, uniq } from "lodash";
 
 export default {
   components: {
@@ -53,22 +59,22 @@ export default {
   },
   data() {
     return {
-      covid: null,
+      done: false,
       chartdata: null,
-      series: null
+      series: null,
+      options: null
     };
   },
   computed: {
-    forecast() {
-      if (this.covid) {
-        let newForecast = [...this.covid.data.forecast];
-        newForecast.unshift(0);
-
-        return newForecast;
-      } else {
-        return [];
-      }
-    }
+    // forecast() {
+    //   if (this.covid) {
+    //     let newForecast = [...this.covid.data.forecast];
+    //     newForecast.unshift(0);
+    //     return newForecast;
+    //   } else {
+    //     return [];
+    //   }
+    // }
   },
   async created() {
     await this.getSeries();
@@ -149,6 +155,7 @@ export default {
         intervals.push({ low, high, median, a });
       }
 
+      console.log("intervals");
       console.table(intervals);
 
       // FLR
@@ -174,6 +181,7 @@ export default {
         }
       });
 
+      console.log("series");
       console.table(this.series);
 
       // FRG
@@ -202,6 +210,7 @@ export default {
         groups.push({ groupName, groupRelation });
       }
 
+      console.log("groups");
       console.table(groups);
 
       // forecast
@@ -224,7 +233,7 @@ export default {
         const medians = [];
 
         nextStates.forEach(nextState => {
-          const intervalItem = intervals.find(e => (e.a == nextState));
+          const intervalItem = intervals.find(e => e.a == nextState);
           medians.push(intervalItem.median);
         });
 
@@ -232,7 +241,75 @@ export default {
         forecasts.push({ currentState, nextStates, forecast });
       }
 
-      console.table(forecasts)
+      console.log("forecasts");
+      console.table(forecasts);
+
+      // apply forecasts
+      this.series.map((seri, iSeries) => {
+        if (iSeries !== 0) {
+          for (let i = 0; i < forecasts.length; i++) {
+            const forecast = forecasts[i];
+
+            if (seri.fuzzifikasi === forecast.currentState) {
+              seri.forecast = forecast.forecast;
+            }
+          }
+        }
+      });
+
+      // predict next day
+      for (let i = 0; i < forecasts.length; i++) {
+        const forecast = forecasts[i];
+
+        const lastSeries = this.series[this.series.length - 1];
+        if (lastSeries.fuzzifikasi === forecast.currentState) {
+          this.series.push({
+            name: "besok",
+            forecast: forecast.forecast
+          });
+        }
+      }
+
+      console.log("this.series");
+      console.table(this.series);
+
+      // chart
+
+      const date = map(this.series, "name");
+      const actual = map(this.series, "dirawat_kumulatif");
+      const forecast = map(this.series, "forecast");
+
+      this.chartdata = {
+        labels: date,
+        datasets: [
+          {
+            label: "Aktual",
+            data: actual,
+            backgroundColor: "transparent",
+            borderColor: "#FF6384"
+          },
+          {
+            label: "Prediksi",
+            data: forecast,
+            backgroundColor: "transparent",
+            borderColor: "#36A2EB"
+          }
+        ]
+      };
+
+      this.options = {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true
+              }
+            }
+          ]
+        }
+      };
+
+      this.done = true;
 
       // let intervalValues = dMin
       // let middleValues = null
