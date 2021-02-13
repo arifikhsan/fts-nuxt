@@ -264,7 +264,7 @@ export default {
         const lastSeries = this.series[this.series.length - 1];
         if (lastSeries.fuzzifikasi === forecast.currentState) {
           this.series.push({
-            name: "besok",
+            name: "prediksi besok",
             forecast: forecast.forecast
           });
         }
