@@ -40,7 +40,7 @@
 
 <script>
 import LineChart from "@/components/line-chart";
-import { map, min, max, times } from "lodash";
+import { map, min, max, times, uniq } from "lodash";
 
 export default {
   components: {
@@ -149,7 +149,7 @@ export default {
         intervals.push({ low, high, median, a });
       }
 
-      console.log(intervals);
+      console.table(intervals);
 
       // FLR
       this.series.map((seri, iSeries) => {
@@ -177,16 +177,44 @@ export default {
       console.table(this.series);
 
       // FRG
-      let group = [];
+      const groups = [];
 
-      for (let i = 0; i < intervals.length; i++) {
-        const interval = intervals[i];
+      for (let iInterval = 0; iInterval < intervals.length; iInterval++) {
+        const interval = intervals[iInterval];
 
-        const name = `Group ${i + 1}`;
-        const relation = 1;
+        // FRG
+        const groupName = `Group ${iInterval + 1}`;
+        let groupRelation = [];
 
-        group.push();
+        for (let i = 0; i < this.series.length; i++) {
+          const seri = this.series[i];
+
+          if (i !== 0) {
+            const relasi = seri.relasi.split(" ");
+
+            if (interval.a === relasi[0]) {
+              groupRelation.push(seri.relasi);
+            }
+          }
+        }
+
+        groupRelation = uniq(groupRelation, true);
+        groups.push({ groupName, groupRelation });
       }
+
+      console.table(groups);
+
+      // forecast
+      const forecasts = [];
+
+      // todo: loop array interval dan group bareng
+      // for (let iGroup = 0; iGroup < groups.length; iGroup++) {
+      //   const group = groups[iGroup];
+
+      //   const current = group.a;
+      //   const next = 1;
+      //   forecasts.push({ current, next, forecast });
+      // }
 
       // let intervalValues = dMin
       // let middleValues = null
