@@ -2,7 +2,7 @@
   <div class="max-w-3xl pt-4 pb-16 mx-auto">
     <div class="p-4 text-center">
       <h1 class="text-3xl font-bold text-indigo-600">
-        Peramalan Kasus Positif Covid 19 di Indonesia
+        Peramalan Kasus Aktif Covid-19 di Indonesia
       </h1>
     </div>
     <client-only v-if="done">
@@ -264,7 +264,7 @@ export default {
         const lastSeries = this.series[this.series.length - 1];
         if (lastSeries.fuzzifikasi === forecast.currentState) {
           this.series.push({
-            name: "prediksi besok",
+            name: "besoknya",
             forecast: forecast.forecast
           });
         }
