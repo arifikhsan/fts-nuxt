@@ -69,7 +69,9 @@
             </tr>
             <tr>
               <td class="border border-indigo-600">Lebar Interval</td>
-              <td class="border border-indigo-600">{{ intervalLength }}</td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(intervalLength) }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -91,10 +93,18 @@
           <tbody>
             <tr v-for="(interval, i) in intervals" :key="i">
               <td class="border border-indigo-600">{{ `U${i + 1}` }}</td>
-              <td class="border border-indigo-600">{{ interval.low }}</td>
-              <td class="border border-indigo-600">{{ interval.high }}</td>
-              <td class="border border-indigo-600">{{ interval.a }}</td>
-              <td class="border border-indigo-600">{{ interval.median }}</td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(interval.low) }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(interval.high) }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(interval.a) }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(interval.median) }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -144,7 +154,9 @@
                 {{ forecast.nextStates }}
               </td>
               <td class="border border-indigo-600">{{ forecast.formula }}</td>
-              <td class="border border-indigo-600">{{ forecast.forecast }}</td>
+              <td class="border border-indigo-600">
+                {{ twoDigit(forecast.forecast) }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -159,6 +171,8 @@
               <td class="border border-indigo-600">Tanggal</td>
               <td class="border border-indigo-600">Positif</td>
               <td class="border border-indigo-600">Prediksi</td>
+              <td class="border border-indigo-600">MAPE</td>
+              <td class="border border-indigo-600">Persentase</td>
             </tr>
           </thead>
           <tbody>
@@ -167,7 +181,40 @@
               <td class="border border-indigo-600">
                 {{ seri.dirawat_kumulatif }}
               </td>
-              <td class="border border-indigo-600">{{ seri.forecast }}</td>
+              <td class="border border-indigo-600">
+                {{ seri.forecast ? twoDigit(seri.forecast) : "" }}
+              </td>
+              <template v-if="i !== series.length - 1">
+                <td class="border border-indigo-600">
+                  {{ threeDigit(seri.mape) }}
+                </td>
+                <td class="border border-indigo-600">
+                  {{ threeDigit(seri.percentage) }} %
+                </td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Hasil</h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">MAPE</td>
+              <td class="border border-indigo-600">Prosentase</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-indigo-600">
+                {{ threeDigit(finalMape) }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ threeDigit(finalMape * 100) }} %
+              </td>
             </tr>
           </tbody>
         </table>
@@ -202,7 +249,8 @@ export default {
       intervalLength: 0,
       intervals: [],
       groups: [],
-      forecasts: []
+      forecasts: [],
+      finalMape: 0
     };
   },
   computed: {
@@ -372,7 +420,6 @@ export default {
 
         const currentState = interval.a;
         const nextStates = [];
-        const formula = "";
         group.groupRelation.forEach(relation => {
           let rel = relation.split(" ");
           let lastRelation = rel[rel.length - 1];
@@ -387,7 +434,12 @@ export default {
           medians.push(intervalItem.median);
         });
 
-        formula = `average(${medians})`;
+        const formula = [];
+        medians.forEach(median => {
+          formula.push(this.twoDigit(median));
+        });
+
+        formula = `average(${formula})`;
 
         const forecast = medians.reduce((a, b) => a + b) / medians.length;
         forecasts.push({ currentState, nextStates, formula, forecast });
@@ -426,6 +478,33 @@ export default {
 
       console.log("this.series");
       console.table(this.series);
+
+      // MAPE
+      for (let i = 0; i < this.series.length; i++) {
+        const seri = this.series[i];
+
+        if (i !== 0) {
+          const mape =
+            Math.abs(seri.dirawat_kumulatif - seri.forecast) /
+            seri.dirawat_kumulatif;
+          seri.mape = mape;
+
+          // percentage %
+          seri.percentage = mape * 100;
+        } else {
+          seri.mape = 0;
+          seri.percentage = 0
+        }
+      }
+
+      // final result
+
+      let mapes = map(this.series, "mape");
+      mapes.shift();
+      mapes.pop();
+      console.log(mapes);
+      this.finalMape = mapes.reduce((a, b) => a + b) / mapes.length;
+      console.log(this.finalMape);
 
       // chart
 
@@ -503,6 +582,16 @@ export default {
       //   } catch (error) {
       //     console.log(error);
       //   }
+    },
+    twoDigit(number) {
+      return number.toLocaleString(undefined, {
+        maximumFractionDigits: 2
+      });
+    },
+    threeDigit(number) {
+      return number.toLocaleString(undefined, {
+        maximumFractionDigits: 3
+      });
     }
   }
 };
