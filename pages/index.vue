@@ -18,7 +18,139 @@
         ></line-chart>
       </div>
       <div class="px-4 mt-6 text-center">
-        <h2 class="text-2xl font-bold text-indigo-500">Tabel</h2>
+        <h2 class="text-2xl font-bold text-indigo-500">Data 2021</h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Tanggal</td>
+              <td class="border border-indigo-600">Positif</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(seri, i) in series" :key="i">
+              <template v-if="i !== series.length - 1">
+                <td class="border border-indigo-600">{{ seri.name }}</td>
+                <td class="border border-indigo-600">
+                  {{ seri.dirawat_kumulatif }}
+                </td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-3xl font-bold text-indigo-500">Perhitungan</h2>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Himpunan Semesta</h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Nama</td>
+              <td class="border border-indigo-600">Nilai</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-indigo-600">Min</td>
+              <td class="border border-indigo-600">{{ dMin }}</td>
+            </tr>
+            <tr>
+              <td class="border border-indigo-600">Max</td>
+              <td class="border border-indigo-600">{{ dMax }}</td>
+            </tr>
+            <tr>
+              <td class="border border-indigo-600">Jumlah Interval</td>
+              <td class="border border-indigo-600">{{ intervalCount }}</td>
+            </tr>
+            <tr>
+              <td class="border border-indigo-600">Lebar Interval</td>
+              <td class="border border-indigo-600">{{ intervalLength }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Interval</h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">U</td>
+              <td class="border border-indigo-600">Dari</td>
+              <td class="border border-indigo-600">Sampai</td>
+              <td class="border border-indigo-600">A</td>
+              <td class="border border-indigo-600">Median</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(interval, i) in intervals" :key="i">
+              <td class="border border-indigo-600">{{ `U${i + 1}` }}</td>
+              <td class="border border-indigo-600">{{ interval.low }}</td>
+              <td class="border border-indigo-600">{{ interval.high }}</td>
+              <td class="border border-indigo-600">{{ interval.a }}</td>
+              <td class="border border-indigo-600">{{ interval.median }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">
+          Fuzzy Relationship Grup
+        </h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Group</td>
+              <td class="border border-indigo-600">Relationship</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(group, i) in groups" :key="i">
+              <td class="border border-indigo-600">{{ group.groupName }}</td>
+              <td class="border border-indigo-600">
+                {{ group.groupRelation }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Prediksi</h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Current State</td>
+              <td class="border border-indigo-600">Next State</td>
+              <td class="border border-indigo-600">Perhitungan</td>
+              <td class="border border-indigo-600">Nilai Prediksi</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(forecast, i) in forecasts" :key="i">
+              <td class="border border-indigo-600">
+                {{ forecast.currentState }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ forecast.nextStates }}
+              </td>
+              <td class="border border-indigo-600">{{ forecast.formula }}</td>
+              <td class="border border-indigo-600">{{ forecast.forecast }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">Hasil Prediksi</h2>
         <table
           class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
         >
@@ -62,7 +194,15 @@ export default {
       done: false,
       chartdata: null,
       series: null,
-      options: null
+      options: null,
+
+      dMin: 0,
+      dMax: 0,
+      intervalCount: 0,
+      intervalLength: 0,
+      intervals: [],
+      groups: [],
+      forecasts: []
     };
   },
   computed: {
@@ -144,6 +284,11 @@ export default {
       console.log("intervalCount", intervalCount);
       console.log("intervalLength", intervalLength);
 
+      this.dMin = dMin;
+      this.dMax = dMax;
+      this.intervalCount = intervalCount;
+      this.intervalLength = intervalLength;
+
       // interval
       let intervals = [];
       for (let i = 0; i < intervalCount; i++) {
@@ -157,6 +302,8 @@ export default {
 
       console.log("intervals");
       console.table(intervals);
+
+      this.intervals = intervals;
 
       // FLR
       this.series.map((seri, iSeries) => {
@@ -213,6 +360,8 @@ export default {
       console.log("groups");
       console.table(groups);
 
+      this.groups = groups;
+
       // forecast
       const forecasts = [];
 
@@ -223,6 +372,7 @@ export default {
 
         const currentState = interval.a;
         const nextStates = [];
+        const formula = "";
         group.groupRelation.forEach(relation => {
           let rel = relation.split(" ");
           let lastRelation = rel[rel.length - 1];
@@ -237,12 +387,16 @@ export default {
           medians.push(intervalItem.median);
         });
 
+        formula = `average(${medians})`;
+
         const forecast = medians.reduce((a, b) => a + b) / medians.length;
-        forecasts.push({ currentState, nextStates, forecast });
+        forecasts.push({ currentState, nextStates, formula, forecast });
       }
 
       console.log("forecasts");
       console.table(forecasts);
+
+      this.forecasts = forecasts;
 
       // apply forecasts
       this.series.map((seri, iSeries) => {
