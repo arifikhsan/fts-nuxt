@@ -1,22 +1,27 @@
-# fts-nuxt
+# Sistem Pakar Untuk Memprediksi Kasus Aktif Covid-19 di Indonesia Dengan Metode Fuzzy Time Series Model Chen
 
-> My first-rate Nuxt.js project
+Dibuat untuk mengerjakan UAS.
 
-## Build Setup
+## Software yang dibutuhkan
+
+1. NodeJS
+2. Git
+
+## Cara Install
 
 ```bash
 # install dependencies
 $ yarn install
 
-# serve with hot reload at localhost:3000
+# menjalankan server pada localhost:3000
 $ yarn dev
 
-# build for production and launch server
+# build untuk produksi kemudian mengaktifkan server
 $ yarn build
 $ yarn start
 
-# generate static project
+# membuat proyek statis
 $ yarn generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+[Nuxt.js docs](https://nuxtjs.org).
