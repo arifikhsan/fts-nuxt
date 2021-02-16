@@ -378,7 +378,7 @@ export default {
         if (iSeries !== 0) {
           const previousSeri = this.series[iSeries - 1];
 
-          seri.relasi = `${previousSeri.fuzzifikasi} > ${seri.fuzzifikasi}`;
+          seri.relasi = `${previousSeri.fuzzifikasi} → ${seri.fuzzifikasi}`;
         }
       });
 
