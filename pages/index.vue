@@ -123,6 +123,8 @@
           <thead>
             <tr class="bg-indigo-200">
               <td class="border border-indigo-600">Periode</td>
+              <td class="border border-indigo-600">Value</td>
+              <td class="border border-indigo-600">Fuzzyfication</td>
               <td class="border border-indigo-600">Relation</td>
             </tr>
           </thead>
@@ -131,6 +133,12 @@
               <template v-if="i !== series.length - 1">
                 <td class="border border-indigo-600">
                   {{ seri.name }}
+                </td>
+                <td class="border border-indigo-600">
+                  {{ seri.dirawat_kumulatif }}
+                </td>
+                <td class="border border-indigo-600">
+                  {{ seri.fuzzifikasi }}
                 </td>
                 <td v-if="i !== 0" class="border border-indigo-600">
                   {{ seri.relasi }}
@@ -202,6 +210,7 @@
             <tr class="bg-indigo-200">
               <td class="border border-indigo-600">Tanggal</td>
               <td class="border border-indigo-600">Kasus Aktif</td>
+              <td class="border border-indigo-600">Fuzzifikasi</td>
               <td class="border border-indigo-600">Prediksi</td>
               <td class="border border-indigo-600">MAPE</td>
               <td class="border border-indigo-600">Persentase</td>
@@ -212,6 +221,9 @@
               <td class="border border-indigo-600">{{ seri.name }}</td>
               <td class="border border-indigo-600">
                 {{ seri.dirawat_kumulatif }}
+              </td>
+              <td class="border border-indigo-600">
+                {{ seri.fuzzifikasi }}
               </td>
               <td class="border border-indigo-600">
                 {{ seri.forecast ? twoDigit(seri.forecast) : "" }}
