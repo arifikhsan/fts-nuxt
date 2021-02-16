@@ -13,7 +13,7 @@
       <div class="mt-6 text-center">
         <h2 class="text-2xl font-bold text-indigo-500">Bulan Januari 2021</h2>
         <p class="text-sm italic text-indigo-400">
-          Fuzzy Time Series Metode Chen
+          Metode Fuzzy Time Series Model Chen
         </p>
         <line-chart
           class="mt-4"
