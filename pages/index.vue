@@ -115,7 +115,35 @@
       </div>
       <div class="px-4 mt-6 text-center">
         <h2 class="text-2xl font-bold text-indigo-500">
-          Fuzzy Relationship Grup
+          Fuzzy Logic Relation
+        </h2>
+        <table
+          class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
+        >
+          <thead>
+            <tr class="bg-indigo-200">
+              <td class="border border-indigo-600">Periode</td>
+              <td class="border border-indigo-600">Relation</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(seri, i) in series" :key="i">
+              <template v-if="i !== series.length - 1">
+                <td class="border border-indigo-600">
+                  {{ seri.name }}
+                </td>
+                <td v-if="i !== 0" class="border border-indigo-600">
+                  {{ seri.relasi }}
+                </td>
+                <td v-else></td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="px-4 mt-6 text-center">
+        <h2 class="text-2xl font-bold text-indigo-500">
+          Fuzzy Logic Relation Grup
         </h2>
         <table
           class="w-full mt-4 border border-collapse border-indigo-800 table-auto"
@@ -355,7 +383,7 @@ export default {
       }
 
       console.log("intervals");
-      console.table(intervals);
+      // console.table(intervals);
 
       this.intervals = intervals;
 
